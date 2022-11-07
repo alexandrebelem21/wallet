@@ -1,3 +1,5 @@
+import { ERROR_COINS, REQUEST_COINS, SUCCESS_COINS } from '../actions';
+
 // Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
 const INITIAL_STATE = {
   currencies: [], // array de string
@@ -6,8 +8,29 @@ const INITIAL_STATE = {
   idToEdit: 0,
 };
 
+const filterUSDT = (currencies) => {
+  const coins = Object.keys(currencies);
+  const filtered = coins.filter((element) => element !== 'USDT');
+  return filtered;
+};
+
 const wallet = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+  case REQUEST_COINS:
+    return { ...state };
+
+  case SUCCESS_COINS:
+    return {
+      ...state,
+      currencies: filterUSDT(action.currencies),
+    };
+
+  case ERROR_COINS:
+    return {
+      ...state,
+      error: action.error,
+    };
+
   default:
     return state;
   }

@@ -38,6 +38,14 @@ export const addExpense = (expenses) => ({
 
 });
 
+export const REMOVE_EXPENSE = 'REMOVE_EXPENSE';
+
+export const removeExpense = (payload) => ({
+  type: REMOVE_EXPENSE,
+  payload,
+
+});
+
 export function fetchCoinApi() {
   return async (dispatch) => {
     dispatch(requestCoins());

@@ -1,54 +1,65 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { removeExpense } from '../redux/actions';
 
 class Table extends Component {
+  removeExpenses = ({ target: { name } }) => {
+    const { expenses, dispatch } = this.props;
+    const rmvExpense = expenses.filter((expense) => expense.id !== Number(name));
+    dispatch(removeExpense(rmvExpense));
+  };
+
   render() {
     const { expenses } = this.props;
     return (
-      <>
-        <div>Table</div>
-        <table border={ 4 }>
-          <tr>
-            <th>Descrição</th>
-            <th>Tag</th>
-            <th>Método de pagamento</th>
-            <th>Valor</th>
-            <th>Moeda</th>
-            <th>Câmbio utilizado</th>
-            <th>Valor convertido</th>
-            <th>Moeda de conversão</th>
-            <th>Editar/Excluir</th>
-          </tr>
-          <tbody>
-            { (expenses.map((expense) => (
-              <tr key={ expense.id }>
-                <td>{ expense.description }</td>
-                <td>{ expense.tag }</td>
-                <td>{ expense.method }</td>
-                <td>{ Number(expense.value).toFixed(2) }</td>
-                <td>{ expense.exchangeRates[expense.currency].name }</td>
-                <td>
-                  { Number(expense.exchangeRates[expense.currency].ask).toFixed(2) }
-                </td>
-                <td>
-                  { (Number(expense
-                    .exchangeRates[expense.currency].ask) * Number(expense
-                    .value)).toFixed(2) }
-                </td>
-                <td>Real</td>
-                <td>Editar/Excluir</td>
-              </tr>
-            )))}
+      <table>
+        <tr>
+          <th>Descrição</th>
+          <th>Tag</th>
+          <th>Método de pagamento</th>
+          <th>Valor</th>
+          <th>Moeda</th>
+          <th>Câmbio utilizado</th>
+          <th>Valor convertido</th>
+          <th>Moeda de conversão</th>
+          <th>Editar/Excluir</th>
+        </tr>
+        {expenses.map((
+          { description, tag, method, currency, value, exchangeRates, id },
+        ) => (
+          <tbody key={ id }>
+            <tr>
+              <td>{description}</td>
+              <td>{tag}</td>
+              <td>{method}</td>
+              <td>{Number(value).toFixed(2)}</td>
+              <td>{exchangeRates[currency].name}</td>
+              <td>{Number(exchangeRates[currency].ask).toFixed(2) }</td>
+              <td>{Number(exchangeRates[currency].ask * value).toFixed(2)}</td>
+              <td>Real</td>
+              <td>
+                <button
+                  data-testid="delete-btn"
+                  type="button"
+                  name={ id }
+                  onClick={ this.removeExpenses }
+                >
+                  Excluir
+                </button>
+              </td>
+            </tr>
           </tbody>
-        </table>
-      </>
+        ))}
+      </table>
     );
   }
 }
+
 Table.propTypes = {
-  expenses: PropTypes.arrayOf(PropTypes.shape).isRequired,
-};
+  expenses: PropTypes.arrayOf(PropTypes.shape),
+  dispatch: PropTypes.func,
+}.isRequired;
 const mapStateToProps = ({ wallet }) => ({
   expenses: wallet.expenses,
 });

@@ -8,7 +8,6 @@ class Wallet extends React.Component {
       <div>
         <Header />
         <WalletForm />
-        <h1>OLA</h1>
       </div>
 
     );

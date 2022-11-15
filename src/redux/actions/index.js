@@ -30,6 +30,14 @@ export const errorCoins = (error) => ({
   error,
 });
 
+export const SAVE_EXPENSE = 'SAVE_EXPENSE';
+
+export const addExpense = (expenses) => ({
+  type: SAVE_EXPENSE,
+  expenses,
+
+});
+
 export function fetchCoinApi() {
   return async (dispatch) => {
     dispatch(requestCoins());

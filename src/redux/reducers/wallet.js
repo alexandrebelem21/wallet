@@ -1,4 +1,4 @@
-import { ERROR_COINS, REMOVE_EXPENSE, REQUEST_COINS,
+import { EDITED_EXPENSE, EDIT_EXPENSE, ERROR_COINS, REMOVE_EXPENSE, REQUEST_COINS,
   SAVE_EXPENSE, SUCCESS_COINS } from '../actions';
 
 // Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
@@ -7,6 +7,7 @@ const INITIAL_STATE = {
   expenses: [], // array de objetos, com cada objeto tendo as chaves id, value, currency, method, tag, description e exchangeRates
   editor: false, // valor booleano que indica de uma despesa está sendo editada
   idToEdit: 0,
+  gastoTotal: 0,
 };
 
 const filterUSDT = (currencies) => {
@@ -41,6 +42,20 @@ const wallet = (state = INITIAL_STATE, action) => {
   case REMOVE_EXPENSE:
     return {
       ...state,
+      expenses: action.payload,
+    };
+
+  case EDIT_EXPENSE:
+    return {
+      ...state,
+      editor: true,
+      idToEdit: action.payload,
+    };
+
+  case EDITED_EXPENSE:
+    return {
+      ...state,
+      editor: false,
       expenses: action.payload,
     };
 

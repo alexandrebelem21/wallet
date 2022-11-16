@@ -1,31 +1,46 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderWithRedux } from './helpers/renderWith';
-import Login from '../pages/Login';
+import { act } from 'react-dom/test-utils';
+import { renderWithRouterAndRedux } from './helpers/renderWith';
+import App from '../App';
 
-describe('Testa se os componentes são renderizados na tela inicial', () => {
-  test('Input de e-mail', () => {
-    renderWithRedux(<Login />);
-    const emailInput = screen.getByTestId('email-input');
-    expect(emailInput).toBeInTheDocument();
-    expect(emailInput.type).toBe('text');
+describe('Componentes renderizados', () => {
+  const email = 'email-input';
+  const password = 'password-input';
+  test('Renderiza', () => {
+    renderWithRouterAndRedux(<App />, {
+    });
+
+    expect(screen.getByTestId(email));
+    expect(screen.getByTestId(password));
+    expect(screen.getByText('Entrar'));
   });
-  test('Input de senha', () => {
-    renderWithRedux(<Login />);
-    const passwordInput = screen.getByTestId('password-input');
-    expect(passwordInput).toBeInTheDocument();
-    expect(passwordInput.type).toBe('text');
-    expect(passwordInput.min).toBe('6');
+
+  test('Btn disable', () => {
+    renderWithRouterAndRedux(<App />, {
+    });
+    userEvent.type(screen.getByTestId(email), 'alexandre@gmail.com');
+    expect(screen.getByTestId(email).value).toBe('alexandre@gmail.com');
+    expect(screen.getByText('Entrar')).toHaveAttribute('disabled');
   });
-  test('Botao entrar', () => {
-    renderWithRedux(<Login />);
-    const buttonInput = screen.getByRole('button');
-    expect(buttonInput).toBeInTheDocument();
-    expect(buttonInput.disabled).toBe(true);
-    const emailInput = screen.getByTestId('email-input');
-    const passwordInput = screen.getByTestId('password-input');
-    userEvent.type(emailInput, 'ale@teste.com');
-    userEvent.type(passwordInput, '87654321');
-    expect(buttonInput.disabled).toBe(false);
+
+  test('Btn not disable', () => {
+    renderWithRouterAndRedux(<App />, {
+    });
+    userEvent.type(screen.getByTestId(email), 'alexandres@gmail.com');
+    userEvent.type(screen.getByTestId(password), '123456');
+    expect(screen.getByTestId(email).value).toBe('alexandres@gmail.com');
+    expect(screen.getByTestId(password).value).toBe('123456');
+    expect(screen.getByText('Entrar')).not.toHaveAttribute('disabled');
+  });
+
+  test('click Btn', () => {
+    const { history } = renderWithRouterAndRedux(<App />);
+    userEvent.type(screen.getByTestId(email), 'alexs@gmail.com');
+    userEvent.type(screen.getByTestId(password), '123456');
+    act(() => {
+      userEvent.click(screen.getByText('Entrar'));
+    });
+    expect(history.location.pathname).toBe('/carteira');
   });
 });

@@ -47,24 +47,20 @@ class WalletForm extends Component {
     const { value, currency, method, tag, description } = this.state;
     const { dispatch, expenses, idToEdit } = this.props;
 
-    const data = await getCoinApi();
-    const expenseObj = {
-      id: idToEdit,
+    const api = await getCoinApi();
+    const expenseState = {
       value,
       description,
       currency,
       method,
       tag,
-      exchangeRates: data,
+      id: idToEdit,
+      exchangeRates: api,
     };
 
-    const editedArr = expenses.map((exps) => (exps.id !== idToEdit ? exps : expenseObj));
-    dispatch(editedExpense(editedArr));
-
-    this.setState({
-      description: '',
-      value: '',
-    });
+    const editedExpenses = expenses
+      .map((expense) => (expense.id !== idToEdit ? expense : expenseState));
+    dispatch(editedExpense(editedExpenses));
   };
 
   render() {

@@ -1,8 +1,5 @@
-// Coloque aqui suas actions
-
 import getCoinApi from '../../services/getCoinApi';
 
-// ACTIONS TYPES
 export const ADD_EMAIL = 'ADD_EMAIL';
 
 export const addEmail = (email) => ({
